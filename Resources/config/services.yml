@@ -1,0 +1,81 @@
+parameters:
+#    log.example.class: LogBundle\Example
+
+services:
+#    log.example:
+#        class: %log.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
+
+    maksym_logger:
+        class: LogBundle\Logger\Logger
+        arguments: ["%app_paths.logs%"]
+
+    maksym_activity_logger:
+        class: LogBundle\Service\ActivityLogService
+        arguments:
+            - "@mongo.connector"
+            - "@security.authorization_checker"
+            - "@security.token_storage"
+            - "@security.role_hierarchy"
+            - "@fos_user.user_manager"
+            - "@doctrine.orm.default_entity_manager"
+            - "%app_paths.logs%"
+
+    maksym_activity_listener:
+        class: LogBundle\EventListener\ActivityListener
+        arguments:
+            - "@security.token_storage"
+            - "@maksym_activity_logger"
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onRequestHandler }
+
+    maksym.logger.direct_mail.subscriber:
+        class: LogBundle\EventListener\DirectMail\DirectMailSubscriber
+        arguments:
+            - "@maksym.logger"
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+
+    maksym.logger.direct_mail_info.subscriber:
+        class: LogBundle\EventListener\DirectMail\DirectMailInfoSubscriber
+        arguments:
+            - "@maksym.logger"
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+
+    maksym.log.manager.listener:
+        class: LogBundle\EventListener\LogManagerListener
+        arguments:
+            - "@maksym.log.manager"
+        tags:
+            - { name: kernel.event_listener, event: kernel.terminate, method: onTerminateHandler }
+
+    maksym.log.manager:
+        class: LogBundle\Service\MaksymLogManager
+        arguments:
+            - "@mongo.connector"
+
+#    maksym.logger.job_ticket.subscriber:
+#        class: LogBundle\EventListener\DirectMail\JobTicketSubscriber
+#        arguments:
+#            - "@maksym.logger"
+#        tags:
+#            - { name: doctrine.event_subscriber, connection: default }
+#
+#    maksym.logger.job_ticket_item.subscriber:
+#        class: LogBundle\EventListener\DirectMail\JobTicketItemSubscriber
+#        arguments:
+#            - "@maksym.logger"
+#        tags:
+#            - { name: doctrine.event_subscriber, connection: default }
+
+    maksym.logger:
+        class: LogBundle\Service\MaksymLogger
+        arguments:
+            - "@mongo.connector"
+            - "@request_stack"
+            - "@security.authorization_checker"
+            - "@security.token_storage"
+            - "@security.role_hierarchy"
+            - "@fos_user.user_manager"
+            - "@maksym.log.manager"

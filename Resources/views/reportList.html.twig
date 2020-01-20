@@ -1,0 +1,149 @@
+{% extends 'CoreBundle:Dashboard:layout.html.twig' %}
+
+{% block currentpagetitle %}Display Log{% endblock %}
+
+{% block body %}
+    <article class="container_12" xmlns="http://www.w3.org/1999/html">
+        <section class="grid_12">
+            <div class="block-border">
+                <div class="block-content">
+                    <h1>Coordinating Report</h1>
+
+                    <div class="no-margin">
+
+                        <div class="form-action">
+
+                            {{ form_start(form, {'attr':{'class':'form form-date with-margin with-padding wider300_input'}}) }}
+
+                            {% if logContent|length %}
+                                <ul class="controls-buttons with-children-tip">
+                                    <li>
+                                        <a target="_blank" class="print-button" href="" title="Print report">
+                                            <img src="{{ asset("bundles/core/images/icons/fugue/printer.png")  }}" width="16" height="16">&nbsp;Print
+                                        </a>
+                                    </li>
+                                </ul>
+                            {% endif %}
+                            <p class="message error">Fill all fields</p>
+
+                            <p>
+                                {{ form_label(form.start_date) }}
+                                {{ form_widget(form.start_date) }}
+                                {{ form_errors(form.start_date) }}
+                            </p>
+
+                            <p>
+                                {{ form_label(form.end_date) }}
+                                {{ form_widget(form.end_date) }}
+                                {{ form_errors(form.end_date) }}
+                            </p>
+
+                            <p>
+                                {{ form_row(form.save) }}
+                            </p>
+
+                            {{ form_end(form) }}
+                        </div>
+
+                        <div class="result no-margin">
+                            <style>
+                                table .cell-content {
+                                    -ms-word-break: break-all;
+                                    word-break: break-all;
+
+                                    -webkit-hyphens: auto;
+                                    -moz-hyphens: auto;
+                                    hyphens: auto;
+                                }
+
+                                @media print{
+                                    .result table tr td, .result table tr th{
+                                        border:1px solid black;
+                                    }
+                                }
+
+                                .form-action .error{
+                                    width:275px;
+                                    display:none;
+                                }
+                            </style>
+                            <table id="print-area-content" class="table no-margin" cellspacing="0" width="100%">
+                                <thead>
+                                <tr>
+                                    <th>Coordinator</th>
+                                    <th>Unique job edit count</th>
+                                    <th>Total job edit count</th>
+                                    <th>Jobs uploaded</th>
+                                    <th>Awaiting Approval</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for user, line in logContent %}
+                                    <tr>
+                                        <td style="width: 150px;">{{ user  }}</td>
+                                        <td style="width: 150px;text-align: right;">{{ line.unique  }}</td>
+                                        <td style="width: 150px;text-align: right;">{{ line.count  }}</td>
+                                        <td style="width: 150px;text-align: right;">{{ line.upload  }}</td>
+                                        <td style="width: 150px;text-align: right;">{{ line.awaiting  }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5" style="text-align:center;">data not found</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </article>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets output='css/pickadate.css' filter='cssrewrite,?uglifycss'
+    'bundles/core/pickadatev3/themes/classic.css'
+    'bundles/core/pickadatev3/themes/picker.css'
+    'bundles/core/pickadatev3/themes/classic.date.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}" type="text/css" media="screen" />
+    {% endstylesheets %}
+    <script src="{{ asset('bundles/core/jquery/ui-1.10.2/jquery-ui.min.js') }}"></script>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ asset('bundles/core/pickadatev3/picker.js') }}"></script>
+    <script src="{{ asset('bundles/core/pickadatev3/picker.date.js') }}"></script>
+    <script src="{{ asset('bundles/core/js-misc/jquery.PrintArea.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            var pickerObject = $('.in-date, .out-date').pickadate({
+                format: 'mm/dd/yyyy',
+                datesDisabled: [0],
+                close: ''
+            });
+
+            var picker = pickerObject.pickadate("picker");
+
+            $("form.form-date").on("submit", function(){
+                if($(".in-date").val().length == '' || $(".out-date").val().length ==''){
+                    $(".form-action .error").show();
+                    return false;
+                }
+                $(".form-action .error").hide();
+                return true;
+            })
+
+            $(".print-button").on("click", function(){
+                $(".result").printArea({mode:"iframe"});
+                return false;
+            })
+        });
+
+    </script>
+{% endblock %}

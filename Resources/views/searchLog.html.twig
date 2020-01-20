@@ -1,0 +1,27 @@
+{% extends 'CoreBundle:Dashboard:layout.html.twig' %}
+
+{% block currentpagetitle %}Search in Logs{% endblock %}
+
+{% block body %}
+    <article class="container_12 wider300_input" xmlns="http://www.w3.org/1999/html">
+        <section class="grid_12">
+            <div class="block-border">
+                <div class="block-content">
+                    {% if error != 'none' %}
+                        <p class="message error">{{ error }}</p>
+                    {% endif %}
+                    <form action="{{ path('logger_search_in_logs') }}" {{ form_enctype(form) }} method="POST" class="form with-margin">
+                        <p>
+                            {{ form_label(form.keyword) }}
+                            {{ form_widget(form.keyword) }}
+                            {{ form_errors(form.keyword) }}
+                        </p>
+                        <p>
+                            <input type="submit" class="big-button" value="Search"/>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </article>
+{% endblock %}

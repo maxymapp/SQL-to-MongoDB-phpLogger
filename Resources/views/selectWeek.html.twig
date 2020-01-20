@@ -1,0 +1,33 @@
+{% extends 'CoreBundle:Dashboard:layout.html.twig' %}
+
+{% block currentpagetitle %}Select Week{% endblock %}
+
+{% block body %}
+    <article class="container_12" xmlns="http://www.w3.org/1999/html">
+        <section class="grid_12">
+            <div class="block-border">
+                <div class="block-content">
+                    <h1>{{ year }}</h1>
+                    <p>
+                        <a href="{{ path('logger_select_year') }}" title="Back">
+                            <button type="button" class="big-button small">Back</button>
+                        </a>
+                    </p>
+                    <p>
+                        <h2>Select Weekly Log File:</h2>
+                    </p>
+                    <p>
+                        <ul class="extended-list">
+                            {% for logFile in logFiles %}
+                                <li class="icon-article">
+                                    <span class="icon"></span>
+                                    <a href="{{ path('logger_display_log', { 'year':year, 'logFile':logFile }) }}">{{ logFile }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </article>
+{% endblock %}

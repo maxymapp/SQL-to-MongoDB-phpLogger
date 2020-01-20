@@ -1,0 +1,34 @@
+{% extends 'CoreBundle:Dashboard:layout.html.twig' %}
+
+{% block currentpagetitle %}Select Year{% endblock %}
+
+{% block body %}
+    <article class="container_12" xmlns="http://www.w3.org/1999/html">
+        <section class="grid_12">
+            <div class="block-border">
+                <div class="block-content">
+                    <p>
+                        <h2>Select Year:</h2>
+                    </p>
+                    <p>
+                        <ul class="icon-list">
+                            {% for year in years %}
+
+                                <li>
+                                    <a class="big" href="{{ path('logger_select_week', { 'year':year }) }}">{{ year }}</a>
+                                </li>
+
+
+                                {#<span style="margin: 1em 2em 1em 2em">#}
+                                    {#<a href="{{ path('logger_select_week', { 'year':year }) }}">#}
+                                        {#<span class="big-button">{{ year }}</span>#}
+                                    {#</a>#}
+                                {#</span>#}
+                            {% endfor %}
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </article>
+{% endblock %}

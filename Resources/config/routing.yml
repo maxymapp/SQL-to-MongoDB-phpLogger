@@ -1,0 +1,23 @@
+logger_select_year:
+    path:  /logger/year
+    defaults: { _controller: LogBundle:displayLogs:selectYear }
+
+logger_select_week:
+    path:  /logger/{year}/weeks
+    defaults: { _controller: LogBundle:displayLogs:selectWeek }
+
+logger_display_log:
+    path:  /logger/display/{year}/{logFile}
+    defaults: { _controller: LogBundle:displayLogs:displayLog }
+
+logger_search_in_logs:
+    path:  /logger/search
+    defaults: { _controller: LogBundle:displayLogs:searchLogs }
+
+logger_report_logs:
+    path:  /logger/report/list
+    defaults: { _controller: LogBundle:displayLogs:displayReport }
+
+direct_mail_logs:
+    resource: "@LogBundle/Controller/LogsController.php"
+    type:     annotation
